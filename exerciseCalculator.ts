@@ -28,29 +28,29 @@ const calculateExercises = (days: Array<number>, target: number): ExerciseCalcul
         ratingDescription: ratingDesc,
         target: target,
         average: days.reduce((total, sum) => total + sum) / days.length
-    }
-}
+    };
+};
 
-const verifyArguments = (args: Array<string> ): exerciseInput => {
-    if (args.length < 1) throw new Error('Not enough arguments');
+const verifyArguments = (arg1: Array<number>, arg2: number): exerciseInput => {
+    if (arg1.length < 1) throw new Error('Not enough arguments');
 
-    const target = args[0];
-    const days = [...args.slice(1)].map(x => Number(x));
-
-    if (!days.every(x => !isNaN(x))) throw new Error('Provided values were not numbers!');
-    if (isNaN(Number(target))) throw new Error('Provided target is not a number');
+    const target = arg2;
+    const days = arg1;
 
     if (Number(target) < 1) throw new Error('Provided target must be a 1 or higher');
     return {
         days: days,
         target: Number(target)
+    };
+
+};
+
+export default function exerciseCalculator(arg1: Array<number>, arg2: number): ExerciseCalculation {
+    try {
+        const { days, target } = verifyArguments(arg1, arg2);
+        return calculateExercises(days, target);
+    } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        throw new Error(`Error encountered: ${error.message}`); // eslint-disable-line @typescript-eslint/no-unsafe-member-access
     }
-
-}
-
-try {    
-    const { days, target } = verifyArguments(process.argv.slice(2));
-    console.log(calculateExercises(days, target));
-} catch (error) {
-    console.log(`Error encountered: ${error.message}`);
 }
